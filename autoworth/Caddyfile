@@ -1,0 +1,3 @@
+autoworth.si {
+	reverse_proxy autoworth:8765
+}
