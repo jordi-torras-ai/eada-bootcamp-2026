@@ -1,0 +1,69 @@
+name: Import HomePriceMarket project
+on:
+  push:
+    branches: [student/nikol-homepricemarket]
+    paths:
+      - .github/workflows/import-nikol-homepricemarket.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import-project:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download already-uploaded project
+        run: |
+          curl --fail --location --retry 3 --silent --show-error \
+            https://raw.githubusercontent.com/nikolbikbaeva/ames-homevalue/main/HomePrice_Market_Complete_One_Click \
+            --output /tmp/homepricemarket.zip
+      - name: Extract original app as a separate student project
+        run: |
+          python3 - <<'PY'
+          import pathlib, zipfile, shutil, stat
+          archive=pathlib.Path('/tmp/homepricemarket.zip')
+          if not zipfile.is_zipfile(archive):
+              raise SystemExit("Source upload is not a ZIP archive")
+          dest=pathlib.Path('student-projects/nikol-homepricemarket')
+          if dest.exists():
+              raise SystemExit("Destination already exists; refusing to overwrite")
+          dest.mkdir(parents=True)
+          with zipfile.ZipFile(archive) as z:
+              entries=[i for i in z.infolist() if not i.is_dir()]
+              if len(entries)>1000 or sum(i.file_size for i in entries)>100_000_000:
+                  raise SystemExit("Archive is too large")
+              paths=[pathlib.PurePosixPath(i.filename).parts for i in entries if not i.filename.startswith('__MACOSX/')]
+              prefix=paths[0][0] if paths and all(len(p)>1 and p[0]==paths[0][0] for p in paths) else None
+              for entry in entries:
+                  raw=entry.filename
+                  pieces=pathlib.PurePosixPath(raw).parts
+                  if raw.startswith('__MACOSX/') or raw.endswith('.DS_Store'):
+                      continue
+                  if not pieces or raw.startswith('/') or '..' in pieces or '\\' in raw:
+                      raise SystemExit(f"Unsafe archive path: {raw}")
+                  if stat.S_IFMT(entry.external_attr >> 16)==stat.S_IFLNK:
+                      raise SystemExit(f"Unsafe symlink entry: {raw}")
+                  rel=pathlib.Path(*pieces[1:]) if prefix else pathlib.Path(*pieces)
+                  if not rel.parts: continue
+                  if any(p in {'.git','node_modules','.venv','__pycache__','.data'} for p in rel.parts):
+                      continue
+                  if rel.name.startswith('.env') or rel.suffix in {'.sqlite','.db','.pem','.key'}:
+                      continue
+                  target=dest/rel
+                  target.parent.mkdir(parents=True,exist_ok=True)
+                  with z.open(entry) as inp, open(target,'wb') as out:
+                      shutil.copyfileobj(inp,out)
+          PY
+      - name: Commit imported files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add student-projects/nikol-homepricemarket
+          if ! git diff --cached --quiet; then
+            git commit -m "Add Nikol's HomePriceMarket project files"
+            git push
+          fi
