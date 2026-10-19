@@ -1,5 +1,7 @@
 # Ownly on DigitalOcean
 
+Status: the deployment was removed on October 19, 2026, including the application database, service, Apache host, certificate, and GoDaddy DNS record. These instructions describe the former installation and can be used as a reference to deploy it again.
+
 This deployment runs the existing Node HTTP server behind Apache at `https://ownly.torras.ai`, using the local SQLite adapter. It needs no Cloudflare account, npm install, frontend compilation, or Python runtime. The browser prediction model is already exported in the repository.
 
 The installer targets the existing x86_64 Ubuntu droplet and its Apache setup. It installs a checksum-verified Node 24 LTS runtime under `/opt/ownly`, retrieves a specific GitHub commit, runs the model/API/HTTP tests, and starts a systemd service bound to `127.0.0.1:8850`. A separate Apache virtual host handles only `ownly.torras.ai`. Existing virtual hosts and their DNS records are left in place.

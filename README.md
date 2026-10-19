@@ -2,7 +2,7 @@
 
 A housing data-science project and property portal: explore Ames home sales, compare compact predictive models, and use Ownly to list homes and connect buyers with sellers.
 
-The public portal is available at [ownly.torras.ai](https://ownly.torras.ai). It runs on DigitalOcean with HTTPS and SQLite. See the [deployment guide](deploy/digitalocean/README.md) for service management, persistent storage, and updates.
+The DigitalOcean deployment was removed on October 19, 2026. The application source, model artifacts, and reports remain available here, and Ownly can still be run locally. The [deployment guide](deploy/digitalocean/README.md) is retained as a reference for a future installation.
 
 ## Try Ownly, the property portal
 
