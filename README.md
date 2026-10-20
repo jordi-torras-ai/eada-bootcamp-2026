@@ -131,3 +131,8 @@ Blank cells are counted separately. Their meaning needs context: an absent garag
 No records are removed, no missing values are filled, and no model is trained. Correlations use available numeric pairs and exclude identifiers and nominal category codes. Pearson correlations describe association, including a numeric approximation for ordered quality ratings; they are not accuracy scores or causal effects. Neighborhood and yearly medians are unadjusted summaries of the homes sold.
 
 The EDA explores all available rows. Before selecting features or tuning a model for a final evaluation, define an untouched holdout and repeat those decisions using training data only. Fit imputation and categorical encoding on training data. The recorded prices are historical USD from 2006–2010.
+
+
+## CreditLens: credit-risk analysis
+
+[CreditLens](projects/creditlens/README.md) is a standalone educational project for exploring credit-risk data, comparing classification models, and trying an interactive browser-based estimate. Open the [self-contained app](projects/creditlens/index.html) locally; the [presentation guide](projects/creditlens/PRESENTATION_GUIDE.md) explains the findings in plain language.

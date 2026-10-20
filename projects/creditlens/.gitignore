@@ -1,0 +1,7 @@
+# Keep the downloaded dataset and local-only files out of Git.
+credit_risk_dataset.csv
+.creditlens_packages/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
