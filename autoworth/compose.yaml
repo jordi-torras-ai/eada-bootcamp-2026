@@ -1,0 +1,26 @@
+services:
+  autoworth:
+    build: .
+    restart: unless-stopped
+    environment:
+      HOST: 0.0.0.0
+      PORT: 8765
+      AUTOWORTH_DB: /data/autoworth.sqlite3
+    volumes:
+      - autoworth_data:/data
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - autoworth
+volumes:
+  autoworth_data:
+  caddy_data:
+  caddy_config:
